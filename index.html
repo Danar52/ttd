@@ -77,6 +77,16 @@
     canvas {
         margin-top: 20px;
     }
+
+    #downloadBtn {
+        display: none;
+        margin-top: 15px;
+        background-color: #22c55e;
+    }
+
+    #downloadBtn:hover {
+        background-color: #16a34a;
+    }
 </style>
 </head>
 <body>
@@ -101,6 +111,7 @@
 <button onclick="generateQR()">Generate</button>
 
 <div class="output" id="output"></div>
+<button id="downloadBtn">Download QR Code</button>
 
 <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 <script>
@@ -114,21 +125,32 @@ function generateQR() {
         return;
     }
 
-    // Ganti baseURL sesuai lokasi file verifikasi.html (file yang kamu kasih sebelumnya)
-    const baseURL = "https://ttd-pink.vercel.app/verifikasi.html"; // Ganti dengan URL online milikmu
+    // URL verifikasi di Vercel
+    const baseURL = "https://ttd-pink.vercel.app/verifikasi.html";
     const url = `${baseURL}?nama=${nama}&tanggal=${tanggal}&perihal=${perihal}`;
 
-    // Tampilkan hasil
+    // Tampilkan link + canvas QR code
     const outputDiv = document.getElementById("output");
     outputDiv.innerHTML = `
         <p><strong>Link Verifikasi:</strong></p>
         <a href="${url}" target="_blank">${url}</a>
-        <div id="qrcode"></div>
+        <canvas id="qrcodeCanvas"></canvas>
     `;
 
-    // Buat QR code
-    QRCode.toCanvas(document.getElementById("qrcode"), url, { width: 200 }, function (error) {
+    // Generate QR ke canvas
+    QRCode.toCanvas(document.getElementById("qrcodeCanvas"), url, { width: 200 }, function (error) {
         if (error) console.error(error);
+        else {
+            const downloadBtn = document.getElementById("downloadBtn");
+            downloadBtn.style.display = "inline-block";
+            downloadBtn.onclick = function() {
+                const canvas = document.getElementById("qrcodeCanvas");
+                const link = document.createElement("a");
+                link.download = "qr-code.png";
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            };
+        }
     });
 }
 </script>
