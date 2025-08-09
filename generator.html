@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generator Tanda Tangan Digital</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        padding: 20px;
+        text-align: center;
+    }
+    .form-group {
+        margin: 15px 0;
+    }
+    input, button {
+        padding: 10px;
+        font-size: 1em;
+        width: 80%;
+        max-width: 400px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+    }
+    button {
+        background: #007bff;
+        color: white;
+        cursor: pointer;
+        border: none;
+    }
+    button:hover {
+        background: #0056b3;
+    }
+    .output {
+        margin-top: 20px;
+    }
+    img {
+        margin-top: 10px;
+    }
+</style>
+</head>
+<body>
+
+<h1>Generator Tanda Tangan Digital</h1>
+
+<div class="form-group">
+    <input type="text" id="nama" placeholder="Nama Penandatangan">
+</div>
+<div class="form-group">
+    <input type="date" id="tanggal">
+</div>
+<div class="form-group">
+    <input type="text" id="perihal" placeholder="Perihal Dokumen">
+</div>
+<button onclick="generateQR()">Generate QR Code</button>
+
+<div class="output" id="output"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+<script>
+function generateQR() {
+    const nama = encodeURIComponent(document.getElementById("nama").value.trim());
+    const tanggal = encodeURIComponent(document.getElementById("tanggal").value);
+    const perihal = encodeURIComponent(document.getElementById("perihal").value.trim());
+
+    if (!nama || !tanggal || !perihal) {
+        alert("Harap isi semua data!");
+        return;
+    }
+
+    // Link ke halaman tanda tangan digital
+    const baseURL = "https://domainkamu.com/ttd.html"; // Ganti sesuai domain
+    const url = `${baseURL}?nama=${nama}&tanggal=${tanggal}&perihal=${perihal}`;
+
+    // Tampilkan link dan QR Code
+    document.getElementById("output").innerHTML = `
+        <p><strong>Link Tanda Tangan Digital:</strong> <a href="${url}" target="_blank">${url}</a></p>
+        <canvas id="qrcode"></canvas>
+    `;
+
+    QRCode.toCanvas(document.getElementById("qrcode"), url, { width: 200 }, function (error) {
+        if (error) console.error(error);
+    });
+}
+</script>
+
+</body>
+</html>
