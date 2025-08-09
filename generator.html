@@ -4,55 +4,101 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Generator Tanda Tangan Digital</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
     body {
-        font-family: Arial, sans-serif;
-        background-color: #f9f9f9;
-        padding: 20px;
+        font-family: 'Poppins', sans-serif;
+        background-color: #f4f7fc;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 30px;
+        min-height: 100vh;
+    }
+
+    h1 {
+        margin-bottom: 20px;
+        color: #2563eb;
         text-align: center;
     }
+
     .form-group {
-        margin: 15px 0;
-    }
-    input, button {
-        padding: 10px;
-        font-size: 1em;
-        width: 80%;
+        margin-bottom: 15px;
+        width: 100%;
         max-width: 400px;
+    }
+
+    label {
+        font-weight: 500;
+        display: block;
+        margin-bottom: 5px;
+        color: #333;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
         border: 1px solid #ccc;
         border-radius: 6px;
+        font-size: 1em;
     }
+
     button {
-        background: #007bff;
+        padding: 10px 20px;
+        font-size: 1em;
+        background-color: #2563eb;
         color: white;
-        cursor: pointer;
         border: none;
-    }
-    button:hover {
-        background: #0056b3;
-    }
-    .output {
-        margin-top: 20px;
-    }
-    img {
+        border-radius: 6px;
+        cursor: pointer;
         margin-top: 10px;
+    }
+
+    button:hover {
+        background-color: #1d4ed8;
+    }
+
+    .output {
+        margin-top: 30px;
+        text-align: center;
+    }
+
+    .output a {
+        display: inline-block;
+        margin-top: 10px;
+        color: #2563eb;
+        word-break: break-all;
+    }
+
+    canvas {
+        margin-top: 20px;
     }
 </style>
 </head>
 <body>
 
-<h1>Generator Tanda Tangan Digital</h1>
+<h1>Generator QR Tanda Tangan Digital</h1>
 
 <div class="form-group">
-    <input type="text" id="nama" placeholder="Nama Penandatangan">
+    <label>Nama Penandatangan</label>
+    <input type="text" id="nama" placeholder="Contoh: Danar Arrasyid">
 </div>
+
 <div class="form-group">
+    <label>Tanggal Tanda Tangan</label>
     <input type="date" id="tanggal">
 </div>
+
 <div class="form-group">
-    <input type="text" id="perihal" placeholder="Perihal Dokumen">
+    <label>Perihal Dokumen</label>
+    <input type="text" id="perihal" placeholder="Contoh: Surat Perjanjian">
 </div>
-<button onclick="generateQR()">Generate QR Code</button>
+
+<button onclick="generateQR()">Generate</button>
 
 <div class="output" id="output"></div>
 
@@ -68,16 +114,19 @@ function generateQR() {
         return;
     }
 
-    // Link ke halaman tanda tangan digital
-    const baseURL = "https://domainkamu.com/ttd.html"; // Ganti sesuai domain
+    // Ganti baseURL sesuai lokasi file verifikasi.html (file yang kamu kasih sebelumnya)
+    const baseURL = "https://username.github.io/verifikasi.html"; // Ganti dengan URL online milikmu
     const url = `${baseURL}?nama=${nama}&tanggal=${tanggal}&perihal=${perihal}`;
 
-    // Tampilkan link dan QR Code
-    document.getElementById("output").innerHTML = `
-        <p><strong>Link Tanda Tangan Digital:</strong> <a href="${url}" target="_blank">${url}</a></p>
-        <canvas id="qrcode"></canvas>
+    // Tampilkan hasil
+    const outputDiv = document.getElementById("output");
+    outputDiv.innerHTML = `
+        <p><strong>Link Verifikasi:</strong></p>
+        <a href="${url}" target="_blank">${url}</a>
+        <div id="qrcode"></div>
     `;
 
+    // Buat QR code
     QRCode.toCanvas(document.getElementById("qrcode"), url, { width: 200 }, function (error) {
         if (error) console.error(error);
     });

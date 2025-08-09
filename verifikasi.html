@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verifikasi Dokumen Personal</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --background-color: #f4f7fc;
+        --card-background: #ffffff;
+        --primary-text: #101828;
+        --secondary-text: #667085;
+        --accent-color: #2563eb;
+        --border-color: #eaecf0;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: var(--background-color);
+        color: var(--primary-text);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .document-container {
+        width: 100%;
+        max-width: 500px;
+        background-color: var(--card-background);
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(16, 24, 40, 0.1);
+        border: 1px solid var(--border-color);
+        overflow: hidden;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: slideUpFadeIn 0.6s 0.2s ease-out forwards;
+    }
+
+    .document-header {
+        padding: 30px;
+        text-align: center;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .header-title {
+        font-size: 1.5em;
+        font-weight: 600;
+        color: var(--primary-text);
+    }
+
+    .header-subtitle {
+        font-size: 0.9em;
+        color: var(--secondary-text);
+        margin-top: 4px;
+    }
+
+    .document-body {
+        padding: 30px;
+    }
+
+    .details-grid {
+        display: grid;
+        gap: 20px;
+    }
+
+    .detail-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .detail-item label {
+        font-size: 0.8em;
+        font-weight: 500;
+        color: var(--secondary-text);
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .detail-item span {
+        font-size: 1.1em;
+        font-weight: 500;
+        color: var(--primary-text);
+        padding-bottom: 6px;
+        border-bottom: 2px solid var(--border-color);
+    }
+
+    .verification-section {
+        margin-top: 30px;
+        padding: 20px;
+        background-color: #f9fafb;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+    
+    .qr-code {
+        width: 80px;
+        height: 80px;
+        flex-shrink: 0;
+    }
+
+    .verification-text p {
+        font-size: 0.9em;
+        color: var(--secondary-text);
+        line-height: 1.5;
+    }
+    
+    .verification-text strong {
+        color: var(--primary-text);
+        font-weight: 600;
+    }
+
+    .document-footer {
+        background-color: #f9fafb;
+        padding: 15px 30px;
+        text-align: center;
+        font-size: 0.8em;
+        color: var(--secondary-text);
+        border-top: 1px solid var(--border-color);
+    }
+    
+    .document-footer strong {
+        color: var(--accent-color);
+        font-weight: 600;
+    }
+
+    @keyframes slideUpFadeIn {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+</head>
+<body>
+
+<div class="document-container">
+    <header class="document-header">
+        <h1 class="header-title">Verifikasi Dokumen Digital</h1>
+        <p class="header-subtitle">Diterbitkan secara personal untuk tujuan verifikasi.</p>
+    </header>
+
+    <main class="document-body">
+        <div class="details-grid">
+            <div class="detail-item">
+                <label>Nama Lengkap</label>
+                <span id="nama">-</span>
+            </div>
+            <div class="detail-item">
+                <label>Tanggal Penerbitan</label>
+                <span id="tanggal">-</span>
+            </div>
+            <div class="detail-item">
+                <label>Perihal Dokumen</label>
+                <span id="perihal">-</span>
+            </div>
+        </div>
+
+        <div class="verification-section">
+            <img id="qrCode" alt="QR Code Verifikasi" class="qr-code">
+            <div class="verification-text">
+                <p>Pindai kode QR untuk <strong>memvalidasi keaslian</strong> dokumen ini secara online.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="document-footer">
+        Keaslian dokumen ini dapat diverifikasi secara <strong>digital</strong>.
+    </footer>
+</div>
+
+<script>
+    // Ambil parameter dari URL
+    const params = new URLSearchParams(window.location.search);
+
+    // Data tanda tangan
+    const nama = params.get("nama") || "Informasi Tidak Tersedia";
+    const perihal = params.get("perihal") || "Informasi Tidak Tersedia";
+
+    // Cek tanggal
+    let tanggal = params.get("tanggal");
+    if (!tanggal) {
+        const today = new Date();
+        const options = { day: 'numeric', month: 'long', year: 'numeric' };
+        tanggal = today.toLocaleDateString('id-ID', options);
+    }
+
+    // Masukkan ke elemen
+    document.getElementById("nama").textContent = nama;
+    document.getElementById("tanggal").textContent = tanggal;
+    document.getElementById("perihal").textContent = perihal;
+
+    // QR Code otomatis sesuai URL saat ini
+    document.getElementById("qrCode").src =
+        `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(window.location.href)}`;
+</script>
+
+</body>
+</html>
